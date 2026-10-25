@@ -1,0 +1,32 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+.env
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.joblib
+!data/model/.gitkeep
+reports/
+/report.json
+*.log
+.DS_Store
+Thumbs.db
+data/samples/*.png
+!data/samples/README.md
+.coverage
+coverage.xml
+htmlcov/
+
+# Downloaded training data (python -m src.model.download_data)
+data/datasets/
+
+# Demo recordings: several are larger than GitHub's 100 MB file limit
+Recording/
+*.mp4
