@@ -1,0 +1,81 @@
+{
+  "_comment": "Final score = max(weighted blend, strongest component). With weights that sum to 1 the blend never exceeds the strongest component, so the strongest component decides. Bands: Safe <= safe_max < Suspicious <= suspicious_max < High-Risk Phishing.",
+  "weights_with_qr": {"url": 0.45, "text": 0.35, "qr": 0.20},
+  "weights_without_qr": {"url": 0.60, "text": 0.40, "qr": 0.0},
+  "bands": {
+    "safe_max": 34,
+    "suspicious_max": 69
+  },
+  "labels": {
+    "safe": "Safe",
+    "suspicious": "Suspicious",
+    "high_risk": "High-Risk Phishing",
+    "error": "Error",
+    "inconclusive": "Inconclusive"
+  },
+  "ml": {
+    "min_probability": 0.55,
+    "alone_probability": 0.95,
+    "alone_floor": 40,
+    "suspicious_probability": 0.70,
+    "suspicious_floor": 40,
+    "high_risk_probability": 0.90,
+    "high_risk_floor": 70
+  },
+  "_comment_rules": "Points added by each rule (src/analysis/url_analysis.py RULES, text_analysis.py, classification/scorer.py). '<rule>_max' caps rules that add points per keyword.",
+  "url_rules": {
+    "malformed_url": 40,
+    "overlong_host": 40,
+    "blocklist": 100,
+    "redirect_param": 10,
+    "user_content_platform": 20,
+    "user_content_brand_or_credential": 20,
+    "legit_brand_sensitive_path": 8,
+    "legit_brand_sensitive_path_max": 24,
+    "allowlisted_domain": 0,
+    "userinfo_trick": 35,
+    "ip_host": 30,
+    "punycode": 28,
+    "homoglyph_brand": 45,
+    "homoglyph_scripts": 30,
+    "suspicious_tld": 22,
+    "excessive_subdomains": 18,
+    "many_subdomains": 10,
+    "hyphenated_host": 12,
+    "url_shortener": 40,
+    "brand_name_in_domain": 45,
+    "typosquat_distance_1": 45,
+    "typosquat_distance_2": 30,
+    "brand_in_deceptive_host": 32,
+    "brand_domain_chain": 45,
+    "lookalike_credential_path": 15,
+    "path_keywords": 8,
+    "path_keywords_max": 24,
+    "host_keywords": 10,
+    "host_keywords_max": 20,
+    "free_hosting": 15,
+    "long_url": 10,
+    "digit_heavy": 10
+  },
+  "text_rules": {
+    "upi_money_request": 20,
+    "callback_number": 15,
+    "credential_form": 15,
+    "high_caps_ratio": 12,
+    "excessive_exclamation": 8,
+    "brand_near_urgency": 20,
+    "brand_link_mismatch": 30,
+    "awareness_factor": 0.5
+  },
+  "qr_rules": {
+    "qr_structured_data": 5,
+    "qr_upi_receive_scam": 75,
+    "qr_upi_payment": 10,
+    "qr_dangerous_scheme": 60,
+    "qr_non_http_scheme": 35,
+    "qr_custom_scheme": 40,
+    "qr_opaque_payload": 15,
+    "qr_present": 5,
+    "qr_suspicious_url_factor": 0.9
+  }
+}
