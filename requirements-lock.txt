@@ -1,0 +1,21 @@
+# Exact versions used to produce the published results (Python 3.11-3.13; tested on 3.13, Windows).
+# Install with: pip install -r requirements-lock.txt
+# The bundled model (data/model/url_model.joblib) was saved with scikit-learn 1.9.1.
+cloudpickle==3.1.2
+colorama==0.4.6; sys_platform == "win32"
+iniconfig==2.3.1
+joblib==1.6.0
+narwhals==2.27.1
+numpy==2.2.6
+opencv-python==4.12.0.88
+packaging==26.3
+pillow==12.3.0
+pluggy==1.7.0
+Pygments==2.21.0
+pytesseract==0.3.13
+pytest==9.1.1
+pyzbar==0.1.9; platform_system != "Windows" or platform_machine != "ARM64"
+qrcode==8.2
+scikit-learn==1.9.1
+scipy==1.16.2
+threadpoolctl==3.7.0
