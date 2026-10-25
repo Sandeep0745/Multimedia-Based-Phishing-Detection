@@ -1,0 +1,34 @@
+# Tool configuration. The project runs from this folder (python -m src.cli ...) and is not
+# packaged for pip: data/config and data/model live next to src/. Install dependencies with
+#   pip install -r requirements-lock.txt      (exact, reproducible versions)
+#   pip install -r requirements-dev.txt       (adds pytest-cov, ruff, mypy)
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["src"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+[tool.ruff]
+line-length = 130
+target-version = "py310"
+extend-exclude = [".venv", "data/datasets"]
+
+[tool.ruff.lint]
+# pycodestyle, pyflakes, bugbear, pyupgrade, blind-except
+select = ["E", "F", "W", "B", "UP", "BLE"]
+
+[tool.ruff.lint.per-file-ignores]
+# Red Team fixture definitions are long data lines by design.
+"make_test_images.py" = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+files = ["src"]
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
