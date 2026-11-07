@@ -1,0 +1,602 @@
+{
+  "_comment": "Entries with 'phrase' match whole words, case-insensitively; entries with 'pattern' are regular expressions (for wording with changing numbers). A hit right after a negation ('never share your OTP') or inside quotes is ignored; awareness wording ('scammers', 'beware') halves the text score.",
+  "urgency": [
+    {
+      "phrase": "immediate action required",
+      "weight": 25
+    },
+    {
+      "phrase": "security alert",
+      "weight": 25
+    },
+    {
+      "phrase": "account suspended",
+      "weight": 22
+    },
+    {
+      "phrase": "account locked",
+      "weight": 22
+    },
+    {
+      "phrase": "verify your identity",
+      "weight": 20
+    },
+    {
+      "phrase": "unusual activity",
+      "weight": 18
+    },
+    {
+      "phrase": "act now",
+      "weight": 15
+    },
+    {
+      "phrase": "within 24 hours",
+      "weight": 15
+    },
+    {
+      "phrase": "urgent",
+      "weight": 12
+    },
+    {
+      "phrase": "final notice",
+      "weight": 18
+    },
+    {
+      "phrase": "your account will be closed",
+      "weight": 22
+    },
+    {
+      "phrase": "avoid suspension",
+      "weight": 15
+    },
+    {
+      "phrase": "immediately",
+      "weight": 8
+    },
+    {
+      "phrase": "today itself",
+      "weight": 12
+    },
+    {
+      "phrase": "is on hold",
+      "weight": 15
+    },
+    {
+      "phrase": "within 12 hours",
+      "weight": 15
+    }
+  ],
+  "threat": [
+    {
+      "phrase": "will be blocked",
+      "weight": 22
+    },
+    {
+      "phrase": "has been blocked",
+      "weight": 20
+    },
+    {
+      "phrase": "will be suspended",
+      "weight": 22
+    },
+    {
+      "phrase": "will be deactivated",
+      "weight": 22
+    },
+    {
+      "phrase": "will be disconnected",
+      "weight": 25
+    },
+    {
+      "phrase": "disconnected tonight",
+      "weight": 15
+    },
+    {
+      "phrase": "legal action",
+      "weight": 18
+    },
+    {
+      "phrase": "arrest warrant",
+      "weight": 25
+    },
+    {
+      "phrase": "digital arrest",
+      "weight": 30
+    },
+    {
+      "phrase": "penalty will be charged",
+      "weight": 15
+    },
+    {
+      "phrase": "unauthorised",
+      "weight": 15
+    },
+    {
+      "phrase": "unauthorized",
+      "weight": 15
+    },
+    {
+      "phrase": "will be returned",
+      "weight": 10
+    },
+    {
+      "phrase": "will be deleted",
+      "weight": 20
+    },
+    {
+      "phrase": "has been limited",
+      "weight": 22
+    },
+    {
+      "phrase": "access has been limited",
+      "weight": 22
+    }
+  ],
+  "credential": [
+    {
+      "phrase": "update your account",
+      "weight": 22
+    },
+    {
+      "phrase": "verify your account",
+      "weight": 20
+    },
+    {
+      "phrase": "verify your password",
+      "weight": 25
+    },
+    {
+      "phrase": "confirm your password",
+      "weight": 25
+    },
+    {
+      "phrase": "enter your credentials",
+      "weight": 22
+    },
+    {
+      "phrase": "login to continue",
+      "weight": 18
+    },
+    {
+      "phrase": "sign in to verify",
+      "weight": 18
+    },
+    {
+      "phrase": "unusual sign-in",
+      "weight": 18
+    },
+    {
+      "phrase": "update payment",
+      "weight": 18
+    },
+    {
+      "phrase": "confirm your identity",
+      "weight": 20
+    },
+    {
+      "phrase": "re-activate",
+      "weight": 15
+    },
+    {
+      "phrase": "click here to verify",
+      "weight": 20
+    },
+    {
+      "phrase": "enter your card details",
+      "weight": 25
+    },
+    {
+      "phrase": "enter your pin",
+      "weight": 25
+    },
+    {
+      "phrase": "cvv",
+      "weight": 15
+    }
+  ],
+  "kyc_otp": [
+    {
+      "phrase": "update your kyc",
+      "weight": 25
+    },
+    {
+      "phrase": "kyc update",
+      "weight": 22
+    },
+    {
+      "phrase": "kyc has expired",
+      "weight": 25
+    },
+    {
+      "phrase": "kyc expired",
+      "weight": 25
+    },
+    {
+      "phrase": "kyc pending",
+      "weight": 20
+    },
+    {
+      "phrase": "update your pan",
+      "weight": 22
+    },
+    {
+      "phrase": "pan card update",
+      "weight": 22
+    },
+    {
+      "phrase": "link your aadhaar",
+      "weight": 18
+    },
+    {
+      "phrase": "share the otp",
+      "weight": 30
+    },
+    {
+      "phrase": "share your otp",
+      "weight": 30
+    },
+    {
+      "phrase": "otp received",
+      "weight": 20
+    },
+    {
+      "phrase": "enter the otp",
+      "weight": 20
+    },
+    {
+      "phrase": "tell the otp",
+      "weight": 30
+    }
+  ],
+  "payment": [
+    {
+      "phrase": "pay pending",
+      "weight": 20
+    },
+    {
+      "phrase": "pending bill",
+      "weight": 15
+    },
+    {
+      "phrase": "bill was not updated",
+      "weight": 20
+    },
+    {
+      "phrase": "redelivery fee",
+      "weight": 22
+    },
+    {
+      "phrase": "held at customs",
+      "weight": 20
+    },
+    {
+      "phrase": "customs duty",
+      "weight": 15
+    },
+    {
+      "phrase": "tax refund",
+      "weight": 18
+    },
+    {
+      "phrase": "refund of rs",
+      "weight": 18
+    },
+    {
+      "phrase": "submit your bank details",
+      "weight": 25
+    },
+    {
+      "phrase": "bank details",
+      "weight": 12
+    },
+    {
+      "phrase": "payment failed",
+      "weight": 18
+    },
+    {
+      "phrase": "processing fee",
+      "weight": 15
+    },
+    {
+      "phrase": "registration fee",
+      "weight": 15
+    },
+    {
+      "phrase": "scan to receive",
+      "weight": 30
+    },
+    {
+      "phrase": "scan the qr to receive",
+      "weight": 30
+    },
+    {
+      "phrase": "incomplete address",
+      "weight": 18
+    },
+    {
+      "phrase": "parcel is held",
+      "weight": 18
+    },
+    {
+      "phrase": "package is held",
+      "weight": 18
+    },
+    {
+      "phrase": "shipping charge",
+      "weight": 12
+    },
+    {
+      "phrase": "clearance fee",
+      "weight": 15
+    },
+    {
+      "pattern": "pay\\b.{0,30}\\bfee\\b.{0,30}\\brelease",
+      "label": "pay a fee to release",
+      "weight": 20
+    }
+  ],
+  "reward": [
+    {
+      "phrase": "gift card",
+      "weight": 18
+    },
+    {
+      "phrase": "you have won",
+      "weight": 20
+    },
+    {
+      "phrase": "claim your prize",
+      "weight": 20
+    },
+    {
+      "phrase": "free reward",
+      "weight": 15
+    },
+    {
+      "phrase": "limited time offer",
+      "weight": 12
+    },
+    {
+      "phrase": "congratulations you",
+      "weight": 15
+    },
+    {
+      "phrase": "lucky draw",
+      "weight": 15
+    },
+    {
+      "phrase": "cashback",
+      "weight": 10
+    },
+    {
+      "phrase": "lottery",
+      "weight": 18
+    }
+  ],
+  "awareness_markers": [
+    "scammers",
+    "fraudsters",
+    "attackers",
+    "beware",
+    "awareness",
+    "never share",
+    "do not share",
+    "don't share",
+    "report fraud",
+    "report phishing",
+    "cybercrime.gov.in",
+    "phishing messages",
+    "scam messages",
+    "fake messages",
+    "banks never ask",
+    "be alert",
+    "stay safe"
+  ],
+  "url_path_keywords": [
+    "login",
+    "signin",
+    "sign-in",
+    "verify",
+    "secure",
+    "account",
+    "update",
+    "confirm",
+    "password",
+    "credential",
+    "wallet",
+    "gift",
+    "prize",
+    "claim",
+    "reward",
+    "secure-update",
+    "webscr",
+    "kyc",
+    "otp",
+    "refund",
+    "billpay",
+    "redeem"
+  ],
+  "shorteners": [
+    "bit.ly",
+    "tinyurl.com",
+    "t.co",
+    "goo.gl",
+    "ow.ly",
+    "is.gd",
+    "buff.ly",
+    "adf.ly",
+    "bitly.com",
+    "cutt.ly",
+    "rb.gy",
+    "shorturl.at",
+    "tiny.cc",
+    "t.ly",
+    "s.id",
+    "v.gd",
+    "shorturl.gg",
+    "rebrand.ly"
+  ],
+  "scam_offer": [
+    {
+      "phrase": "part time job",
+      "weight": 20
+    },
+    {
+      "phrase": "part-time job",
+      "weight": 20
+    },
+    {
+      "phrase": "work from home",
+      "weight": 12
+    },
+    {
+      "phrase": "daily payment",
+      "weight": 12
+    },
+    {
+      "phrase": "liking youtube videos",
+      "weight": 25
+    },
+    {
+      "phrase": "like youtube videos",
+      "weight": 25
+    },
+    {
+      "phrase": "simple online tasks",
+      "weight": 20
+    },
+    {
+      "phrase": "prepaid task",
+      "weight": 25
+    },
+    {
+      "phrase": "registration fee",
+      "weight": 15
+    },
+    {
+      "phrase": "no cibil check",
+      "weight": 20
+    },
+    {
+      "phrase": "no documents needed",
+      "weight": 12
+    },
+    {
+      "phrase": "instant loan",
+      "weight": 12
+    },
+    {
+      "phrase": "instant personal loan",
+      "weight": 15
+    },
+    {
+      "phrase": "0% interest",
+      "weight": 12
+    },
+    {
+      "phrase": "vip trading group",
+      "weight": 20
+    },
+    {
+      "phrase": "stock tips",
+      "weight": 12
+    },
+    {
+      "phrase": "double your money",
+      "weight": 25
+    },
+    {
+      "phrase": "double your crypto",
+      "weight": 25
+    },
+    {
+      "phrase": "bitcoin giveaway",
+      "weight": 25
+    },
+    {
+      "phrase": "crypto giveaway",
+      "weight": 25
+    },
+    {
+      "pattern": "guaranteed\\s+(?:\\d+\\s*%\\s*)?(?:returns?|profits?|income)",
+      "label": "guaranteed returns",
+      "weight": 25
+    },
+    {
+      "pattern": "earn\\s+(?:rs\\.?|inr|₹)\\s*[\\d,]+\\s*(?:daily|per day|a day|every day|weekly|per week)",
+      "label": "earn Rs N daily",
+      "weight": 25
+    },
+    {
+      "pattern": "\\b\\d{3,4}\\s*%\\s*(?:returns?|profits?)",
+      "label": "huge % returns",
+      "weight": 20
+    },
+    {
+      "pattern": "send\\s+[\\d.]+\\s*(?:btc|eth|usdt)\\b.{0,40}\\b(?:get|receive)\\s+[\\d.]+",
+      "label": "send crypto, get double back",
+      "weight": 40
+    },
+    {
+      "pattern": "hr\\s+on\\s+(?:telegram|whatsapp)",
+      "label": "HR on Telegram/WhatsApp",
+      "weight": 15
+    },
+    {
+      "pattern": "\\d{2,4}\\s*%\\s*(?:every|per|a|each)\\s+(?:day|week|month)",
+      "label": "N% every day/week/month",
+      "weight": 20
+    }
+  ],
+  "impersonation": [
+    {
+      "phrase": "this is my new number",
+      "weight": 25
+    },
+    {
+      "phrase": "my phone broke",
+      "weight": 15
+    },
+    {
+      "phrase": "my phone is broken",
+      "weight": 15
+    },
+    {
+      "phrase": "don't tell",
+      "weight": 10
+    },
+    {
+      "phrase": "mailbox storage is full",
+      "weight": 20
+    },
+    {
+      "phrase": "mailbox is full",
+      "weight": 20
+    },
+    {
+      "phrase": "keep your mail",
+      "weight": 15
+    },
+    {
+      "phrase": "increase your storage",
+      "weight": 12
+    },
+    {
+      "phrase": "password expires",
+      "weight": 18
+    },
+    {
+      "phrase": "password will expire",
+      "weight": 18
+    },
+    {
+      "phrase": "our executive",
+      "weight": 10
+    },
+    {
+      "pattern": "(?:need|send)\\s+(?:me\\s+)?(?:rs\\.?|inr|₹)\\s*[\\d,]+.{0,30}\\burgent",
+      "label": "urgent money request",
+      "weight": 20
+    }
+  ]
+}
