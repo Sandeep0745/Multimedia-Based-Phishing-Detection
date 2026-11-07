@@ -1,0 +1,6 @@
+# Domains your organisation trusts, one per line: a hostname or registrable domain.
+# Links on these domains are treated like official brand domains: the look-alike,
+# keyword and ML rules are skipped, but an exact blocklist URL match still counts.
+# Lines starting with # are comments. Example:
+#   intranet.example.com
+#   example-university.ac.in
