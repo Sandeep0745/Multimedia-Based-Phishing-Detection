@@ -1,0 +1,293 @@
+{
+  "_comment": "name: compared by edit distance and substring. aliases: short forms matched only as whole words / hostname tokens (e.g. hdfc-kyc.online).",
+  "brands": [
+    {
+      "name": "paypal",
+      "domains": [
+        "paypal.com",
+        "paypal.me"
+      ]
+    },
+    {
+      "name": "microsoft",
+      "aliases": [
+        "msft",
+        "office365",
+        "outlook",
+        "microsoft 365"
+      ],
+      "domains": [
+        "microsoft.com",
+        "microsoftonline.com",
+        "live.com",
+        "outlook.com",
+        "office.com",
+        "azure.com",
+        "sharepoint.com"
+      ]
+    },
+    {
+      "name": "apple",
+      "aliases": [
+        "appleid",
+        "icloud"
+      ],
+      "domains": [
+        "apple.com",
+        "icloud.com"
+      ]
+    },
+    {
+      "name": "google",
+      "aliases": [
+        "gmail"
+      ],
+      "domains": [
+        "google.com",
+        "google.co.in",
+        "gmail.com",
+        "youtube.com",
+        "forms.gle"
+      ]
+    },
+    {
+      "name": "amazon",
+      "aliases": [
+        "amzn"
+      ],
+      "domains": [
+        "amazon.com",
+        "amazon.co.uk",
+        "amazon.in"
+      ]
+    },
+    {
+      "name": "facebook",
+      "domains": [
+        "facebook.com",
+        "fb.com",
+        "meta.com"
+      ]
+    },
+    {
+      "name": "netflix",
+      "domains": [
+        "netflix.com"
+      ]
+    },
+    {
+      "name": "instagram",
+      "domains": [
+        "instagram.com"
+      ]
+    },
+    {
+      "name": "whatsapp",
+      "domains": [
+        "whatsapp.com"
+      ]
+    },
+    {
+      "name": "chase",
+      "domains": [
+        "chase.com"
+      ]
+    },
+    {
+      "name": "bankofamerica",
+      "domains": [
+        "bankofamerica.com"
+      ]
+    },
+    {
+      "name": "wellsfargo",
+      "domains": [
+        "wellsfargo.com"
+      ]
+    },
+    {
+      "name": "linkedin",
+      "domains": [
+        "linkedin.com"
+      ]
+    },
+    {
+      "name": "dropbox",
+      "domains": [
+        "dropbox.com"
+      ]
+    },
+    {
+      "name": "adobe",
+      "domains": [
+        "adobe.com"
+      ]
+    },
+    {
+      "name": "docusign",
+      "domains": [
+        "docusign.com",
+        "docusign.net"
+      ]
+    },
+    {
+      "name": "onlinesbi",
+      "aliases": [
+        "sbi",
+        "yono",
+        "state bank of india"
+      ],
+      "domains": [
+        "onlinesbi.sbi",
+        "sbi.co.in",
+        "sbi.bank.in"
+      ]
+    },
+    {
+      "name": "hdfcbank",
+      "aliases": [
+        "hdfc",
+        "hdfc bank"
+      ],
+      "domains": [
+        "hdfcbank.com",
+        "hdfc.bank.in"
+      ]
+    },
+    {
+      "name": "icicibank",
+      "aliases": [
+        "icici",
+        "icici bank"
+      ],
+      "domains": [
+        "icicibank.com",
+        "icici.bank.in"
+      ]
+    },
+    {
+      "name": "axisbank",
+      "domains": [
+        "axisbank.com",
+        "axis.bank.in"
+      ],
+      "aliases": [
+        "axis bank"
+      ]
+    },
+    {
+      "name": "phonepe",
+      "domains": [
+        "phonepe.com"
+      ]
+    },
+    {
+      "name": "paytm",
+      "domains": [
+        "paytm.com"
+      ]
+    },
+    {
+      "name": "flipkart",
+      "domains": [
+        "flipkart.com"
+      ]
+    },
+    {
+      "name": "irctc",
+      "domains": [
+        "irctc.co.in"
+      ]
+    },
+    {
+      "name": "incometax",
+      "domains": [
+        "incometax.gov.in"
+      ],
+      "aliases": [
+        "income tax"
+      ]
+    },
+    {
+      "name": "roblox",
+      "domains": [
+        "roblox.com"
+      ]
+    },
+    {
+      "name": "steamcommunity",
+      "aliases": [
+        "steam"
+      ],
+      "domains": [
+        "steamcommunity.com",
+        "steampowered.com"
+      ]
+    },
+    {
+      "name": "coinbase",
+      "domains": [
+        "coinbase.com"
+      ]
+    },
+    {
+      "name": "binance",
+      "domains": [
+        "binance.com"
+      ]
+    },
+    {
+      "name": "metamask",
+      "domains": [
+        "metamask.io"
+      ]
+    },
+    {
+      "name": "fedex",
+      "domains": [
+        "fedex.com"
+      ]
+    },
+    {
+      "name": "usps",
+      "domains": [
+        "usps.com"
+      ]
+    },
+    {
+      "name": "telegram",
+      "domains": [
+        "telegram.org",
+        "t.me"
+      ]
+    },
+    {
+      "name": "discord",
+      "domains": [
+        "discord.com",
+        "discord.gg"
+      ]
+    },
+    {
+      "name": "spotify",
+      "domains": [
+        "spotify.com"
+      ]
+    },
+    {
+      "name": "yahoo",
+      "domains": [
+        "yahoo.com"
+      ]
+    },
+    {
+      "name": "indiapost",
+      "aliases": [
+        "india post"
+      ],
+      "domains": [
+        "indiapost.gov.in"
+      ]
+    }
+  ]
+}
