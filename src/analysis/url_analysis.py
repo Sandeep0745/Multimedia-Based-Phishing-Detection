@@ -379,3 +379,201 @@ def _brand_domain_chain(host: str, reg: str) -> bool:
     return any(reg != domain and pattern.search(sub) for domain, pattern in _brand_chain_patterns())
 
 
+def analyze_url(url: str, _depth: int = 0, *, use_blocklist: bool = True) -> ComponentResult:
+    """Score a single URL and list fired rules. `use_blocklist=False` measures the rules alone."""
+    rules: list[FiredRule] = []
+    score = 0.0
+
+    def fire(rule_id: str, evidence: str, weight: float | None = None, description: str | None = None) -> None:
+        nonlocal score
+        w = _weight(rule_id) if weight is None else weight
+        score += w
+        rules.append(FiredRule(rule_id, description or RULES[rule_id], w, evidence=evidence))
+
+    def per_keyword(rule_id: str, count: float) -> float:
+        return min(_weight(rule_id) * count, _weight(rule_id + "_max"))
+
+    parsed = safe_urlparse(url if "://" in url else "http://" + url)
+    if parsed is not None and _is_overlong((parsed.hostname or "").lower()):
+        fire("overlong_host", (parsed.hostname or "")[:120])
+        return ComponentResult(name="url", score=min(score, 100.0), rules=rules, details={"url": url[:500], "overlong": True})
+    try:
+        feats = extract_features(url)
+    except ValueError:
+        parsed = None
+    if parsed is None:
+        # Brackets or broken hosts make many parsers (and some scanners) give up;
+        # attackers use that to slip links past filters.
+        fire("malformed_url", url[:120])
+        return ComponentResult(name="url", score=min(score, 100.0), rules=rules, details={"url": url, "malformed": True})
+
+    host = (parsed.hostname or "").lower()
+    reg = registrable_domain(host)
+    bare_host = host[4:] if host.startswith("www.") else host
+    # A hosting platform's own homepage (duckdns.org) is the provider's site, not user content.
+    platform_home = reg in load_hosting_platforms() and bare_host == reg
+    top_domain = reg in load_top_domains() or platform_home
+
+    blocked = blocklist_match(url, host, reg) if use_blocklist else None
+    if blocked:
+        what = "URL" if blocked == "url" else "hostname"
+        fire("blocklist", host, description=f"Reported phishing {what} (threat-feed / blocklist match)")
+
+    # Open redirects: google.com/url?q=http://evil.tk — judge the real destination too.
+    if _depth < 2:
+        for target in _redirect_targets(parsed.query, host):
+            inner = analyze_url(target, _depth + 1, use_blocklist=use_blocklist)
+            if score_band(inner.score) != "safe":
+                score = max(score, inner.score)
+                rules.append(
+                    FiredRule("redirect_to_risky_url", RULES["redirect_to_risky_url"], inner.score, evidence=target[:120])
+                )
+            else:
+                fire("redirect_param", target[:120])
+
+    # User-made pages on trusted platforms (Google Sites / Forms, Microsoft Forms, cloud buckets).
+    user_content = _user_content_page(host, parsed.path or "")
+    if user_content:
+        fire("user_content_platform", user_content)
+        brand_words = _brand_words_in_path(parsed.path or "")
+        if brand_words or feats["path_keywords"] >= 1:
+            evidence = ", ".join(brand_words) if brand_words else f"keywords={int(feats['path_keywords'])}"
+            fire("user_content_brand_or_credential", evidence)
+
+    trusted = feats["exact_brand"] >= 1.0 or feats["allowlisted"] >= 1.0
+    if not blocked and trusted and feats["brand_in_host_not_exact"] < 1.0:
+        # Official brand or allowlisted domain: only a mild signal from path keywords.
+        if feats["path_keywords"] >= 2 or (user_content and feats["path_keywords"] >= 1):
+            fire("legit_brand_sensitive_path", url, weight=per_keyword("legit_brand_sensitive_path", feats["path_keywords"]))
+        if feats["allowlisted"] >= 1.0:
+            fire("allowlisted_domain", reg)
+        return ComponentResult(
+            name="url",
+            score=min(score, 100.0),
+            rules=rules,
+            details={"url": url, "features": feats, "registrable_domain": reg},
+        )
+
+    if feats["has_at"] or feats["has_userinfo"]:
+        fire("userinfo_trick", url)
+    if feats["has_ip"]:
+        fire("ip_host", host)
+    if feats["punycode"]:
+        fire("punycode", f"{host} = {_decode_idna(host)}")
+    if feats["homoglyph_brand"]:
+        fire("homoglyph_brand", _decode_idna(host))
+    elif feats["mixed_scripts"]:
+        fire("homoglyph_scripts", host)
+    if feats["suspicious_tld"]:
+        fire("suspicious_tld", reg)
+    if feats["subdomain_depth"] >= 3:
+        fire("excessive_subdomains", f"{int(feats['subdomain_depth'])} levels")
+    elif feats["subdomain_depth"] >= 2:
+        fire("many_subdomains", host)
+    if feats["num_hyphens"] >= 2:
+        fire("hyphenated_host", host)
+    if feats["is_shortener"]:
+        fire("url_shortener", host)
+
+    # Look-alikes of a brand. Popular sites (Tranco top list) are real domains in their own
+    # right, e.g. apply.com, googleusercontent.com or the brand's own country site yahoo.co.jp.
+    brand_dist = feats["brand_distance"]
+    if not top_domain and not feats["homoglyph_brand"]:
+        if feats["brand_token"]:
+            fire("brand_name_in_domain", host)
+        elif feats["ocr_recovers_brand"] or brand_dist == 1:
+            fire("typosquat_distance_1", host)
+        elif brand_dist == 2 and feats["near_brand_length"] >= 7:
+            fire("typosquat_distance_2", host)
+    if feats["brand_in_host_not_exact"] and not top_domain:
+        fire("brand_in_deceptive_host", host)
+    # Brand name as subdomain of unrelated domain: paypal.com.evil.example
+    if _brand_domain_chain(host, reg):
+        fire("brand_domain_chain", host)
+
+    # Brand lookalike that also asks for login / verify / payment.
+    if feats["path_keywords"] >= 1 and any(r.rule_id in _LOOKALIKE_RULES for r in rules):
+        fire("lookalike_credential_path", url)
+    if feats["path_keywords"] >= 1:
+        fire("path_keywords", f"count={int(feats['path_keywords'])}", weight=per_keyword("path_keywords", feats["path_keywords"]))
+
+    # Sensitive words inside the hostname itself: secure-verify-account-update.com
+    host_label = host.rsplit(".", 1)[0] if "." in host else host
+    label_tokens = [t for t in re.split(r"[-_.]", host_label) if t]
+    host_kw = sorted({
+        k for k in load_keywords().get("url_path_keywords", [])
+        if any(_word_in_token(k, tok, SHORT_KEYWORD_LENGTH) for tok in label_tokens)
+    })
+    if host_kw and not top_domain:
+        fire("host_keywords", ", ".join(host_kw), weight=per_keyword("host_keywords", len(host_kw)))
+
+    if reg in load_hosting_platforms() and not platform_home:
+        fire("free_hosting", reg)
+    if feats["url_length"] > 90:
+        fire("long_url", str(int(feats["url_length"])))
+    if feats["digit_ratio"] > 0.25 and feats["num_digits"] >= 3:
+        fire("digit_heavy", host)
+
+    # ML hostname model (raise-only). Skipped for known-popular domains, whose
+    # famous brand names the model otherwise confuses with phishing lookalikes.
+    proba = None
+    if not top_domain:
+        from src.model.classifier import predict_phishing_probability
+
+        proba = predict_phishing_probability(url)
+    if proba is not None:
+        ml = load_scoring()["ml"]
+        # The model alone misfires on unusual-but-legitimate names (CDNs, short brands),
+        # so it only sets a tier floor by itself when very confident; otherwise another
+        # rule must agree with it.
+        corroborated = bool(rules)
+        if not corroborated and proba >= ml["alone_probability"]:
+            floor, desc = ml["alone_floor"], "ML model: hostname very likely phishing"
+        elif corroborated and proba >= ml["high_risk_probability"]:
+            floor, desc = ml["high_risk_floor"], "ML model: hostname very likely phishing (confirmed by rules)"
+        elif corroborated and proba >= ml["suspicious_probability"]:
+            floor, desc = ml["suspicious_floor"], "ML model: hostname likely phishing (confirmed by rules)"
+        elif proba >= ml["min_probability"]:
+            floor, desc = 0.0, RULES["ml_url_classifier"]
+        else:
+            floor, desc = None, ""
+        if floor is not None:
+            # Add a small boost, and lift the score to the tier floor if it is lower.
+            new_score = max(score + min(25.0, (proba - 0.5) * 50.0), floor)
+            rules.append(FiredRule("ml_url_classifier", desc, new_score - score, evidence=f"p={proba:.2f}"))
+            score = new_score
+
+    return ComponentResult(
+        name="url",
+        score=min(score, 100.0),
+        rules=rules,
+        details={"url": url, "features": feats, "registrable_domain": reg, "ml_probability": proba},
+    )
+
+
+def analyze_urls(urls: list[str], cache: dict[str, ComponentResult] | None = None) -> ComponentResult:
+    """
+    Worst-URL-wins aggregation across all extracted URLs.
+
+    `cache` (url -> result) lets callers that score the same URLs twice, such as the
+    URL and QR components of one image, analyse each URL only once. Cached results are
+    never modified.
+    """
+    if not urls:
+        return ComponentResult(name="url", score=0.0, rules=[], details={"urls": []})
+    cache = {} if cache is None else cache
+    results = []
+    for url in urls:
+        if url not in cache:
+            cache[url] = analyze_url(url)
+        results.append(cache[url])
+    worst = results[0]
+    for result in results[1:]:
+        if result.score > worst.score:
+            worst = result
+    return ComponentResult(
+        name="url",
+        score=worst.score,
+        rules=list(worst.rules),
+        details={"urls": urls, "per_url": [r.details for r in results], "worst_url": worst.details.get("url")},
+    )
