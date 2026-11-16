@@ -71,3 +71,76 @@ def _run_ocr(image: np.ndarray) -> tuple[str, float]:
     return joined, mean_conf
 
 
+def extract_text(bundle: PreprocessBundle) -> OCRResult:
+    """
+    Run OCR on multiple preprocessed variants.
+
+    Selection criteria (plan): prefer the variant with the most recovered URLs,
+    breaking ties with higher mean confidence.
+    """
+    if configure_tesseract() is None:
+        return OCRResult(
+            text="",
+            mean_confidence=0.0,
+            variant="none",
+            available=False,
+            error="Tesseract OCR binary not found. Install Tesseract and/or set TESSERACT_CMD.",
+        )
+
+    best: OCRResult | None = None
+    best_key = (-1, -1.0)
+    failures: list[str] = []
+
+    def consider(name: str, image: np.ndarray) -> None:
+        nonlocal best, best_key
+        try:
+            text, conf = _run_ocr(image)
+        except pytesseract.TesseractNotFoundError:
+            raise
+        except Exception as exc:  # noqa: BLE001 — one bad variant must not discard the others
+            failures.append(f"{name}: {exc}")
+            return
+        key = (_count_urls(text), conf)
+        if key > best_key:
+            best, best_key = OCRResult(text=text, mean_confidence=conf, variant=name, available=True), key
+
+    try:
+        for name, image in variants_for_ocr(bundle):
+            consider(name, image)
+        # Little or garbled text: the image may be rotated beyond what deskew handles.
+        if _looks_weak(best) and float(np.std(bundle.upscaled_gray)) > 8:
+            for name, image in rotation_candidates(bundle.upscaled_gray, garbled=_alnum(best) >= 15):
+                consider(name, image)
+    except pytesseract.TesseractNotFoundError:
+        return OCRResult(
+            text="",
+            mean_confidence=0.0,
+            variant="none",
+            available=False,
+            error="Tesseract OCR binary not found at configured path.",
+        )
+
+    if best is None:
+        return OCRResult(
+            text="",
+            mean_confidence=0.0,
+            variant="none",
+            available=False,
+            error=f"OCR failed: {'; '.join(failures) or 'no output'}",
+        )
+    return best
+
+
+def _count_urls(text: str) -> int:
+    try:
+        return len(extract_urls(text))
+    except Exception:  # noqa: BLE001 — never let URL parsing discard OCR text
+        return 0
+
+
+def _alnum(result: OCRResult | None) -> int:
+    return sum(c.isalnum() for c in result.text) if result else 0
+
+
+def _looks_weak(result: OCRResult | None) -> bool:
+    return result is None or result.mean_confidence < 60 or _alnum(result) < 15
