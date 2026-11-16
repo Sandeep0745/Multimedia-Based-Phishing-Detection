@@ -101,3 +101,78 @@ def _weight(rule_id: str) -> float:
     return float(load_scoring()["url_rules"][rule_id])
 
 
+def levenshtein(a: str, b: str) -> int:
+    """Classic edit distance."""
+    if a == b:
+        return 0
+    if not a:
+        return len(b)
+    if not b:
+        return len(a)
+    prev = list(range(len(b) + 1))
+    for i, ca in enumerate(a, 1):
+        curr = [i]
+        for j, cb in enumerate(b, 1):
+            cost = 0 if ca == cb else 1
+            curr.append(min(curr[j - 1] + 1, prev[j] + 1, prev[j - 1] + cost))
+        prev = curr
+    return prev[-1]
+
+
+def _is_overlong(host: str) -> bool:
+    return len(host) > MAX_HOST_LENGTH or any(len(label) > MAX_LABEL_LENGTH for label in host.split("."))
+
+
+def _has_mixed_scripts(text: str) -> bool:
+    """
+    Latin letters mixed with a script whose letters pass for Latin ones (Cyrillic "а", Greek "ο"),
+    or two such scripts, in one label. Accented Latin ("ångström") or a Thai / Hindi / Chinese
+    name is not a look-alike trick.
+    """
+    scripts = set()
+    for ch in text:
+        if ch.isalpha():
+            scripts.add(unicodedata.name(ch, "UNKNOWN").split(" ", 1)[0])
+    lookalike = scripts & _LOOKALIKE_SCRIPTS
+    return bool(lookalike) and ("LATIN" in scripts or len(lookalike) > 1)
+
+
+def _decode_idna(host: str) -> str:
+    """Show punycode labels (xn--...) as the Unicode the victim sees."""
+    out = []
+    for label in host.split("."):
+        if label.startswith("xn--"):
+            try:
+                label = label.encode("ascii").decode("idna")
+            except (UnicodeError, ValueError):
+                pass
+        out.append(label)
+    return ".".join(out)
+
+
+def _nearest_brand(token: str, brands: list[str]) -> tuple[int, str]:
+    best = (99, "")
+    for b in brands:
+        # The edit distance is at least the length difference, so such a brand cannot beat `best`.
+        if abs(len(token) - len(b)) >= best[0]:
+            continue
+        d = levenshtein(token, b)
+        if d < best[0]:
+            best = (d, b)
+    return best
+
+
+def _is_letter_swap_of_short_brand(token: str, brand: str) -> bool:
+    """apply/apple, chose/chase: one letter replaced by another in a short brand is usually a real word."""
+    if len(brand) > 5 or len(token) != len(brand) or not token.isalpha():
+        return False
+    return sum(1 for a, b in zip(token, brand, strict=True) if a != b) == 1
+
+
+def _word_in_token(word: str, token: str, short_length: int) -> bool:
+    """A brand / keyword inside one hostname token; short ones only at the start ("chasebank", not "purchase")."""
+    if len(word) <= short_length:
+        return token.startswith(word)
+    return word in token
+
+
