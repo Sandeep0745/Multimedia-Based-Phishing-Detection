@@ -1,0 +1,5 @@
+# Known phishing URLs, one per line (e.g. confirmed reports copied from phishtank.org).
+# A match makes the URL High-Risk. Scheme, "www." and a trailing "/" are ignored.
+# Lines starting with # are comments. Never open these URLs in a browser.
+# PhishTank report 9532022
+https://espacesecu-tehna.com/index.php
