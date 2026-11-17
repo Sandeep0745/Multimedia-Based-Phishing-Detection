@@ -43,3 +43,38 @@ def redact_text(text: str) -> str:
     return _LONG_NUMBER_RE.sub(_mask_number, text)
 
 
+def redact_data(value: Any) -> Any:
+    """Apply redact_text to every string inside nested lists / dicts (dict keys are left alone)."""
+    if isinstance(value, str):
+        return redact_text(value)
+    if isinstance(value, list):
+        return [redact_data(v) for v in value]
+    if isinstance(value, dict):
+        return {k: redact_data(v) for k, v in value.items()}
+    return value
+
+
+def _redact_component(component: ComponentResult | None) -> ComponentResult | None:
+    if component is None:
+        return None
+    return ComponentResult(
+        name=component.name,
+        score=component.score,
+        rules=[replace(r, evidence=redact_text(r.evidence)) for r in component.rules],
+        details=redact_data(component.details),
+    )
+
+
+def redact_result(result: AnalysisResult) -> AnalysisResult:
+    """A copy of the result with personal data masked; scores, labels and the source path are unchanged."""
+    return replace(
+        result,
+        extracted_text=redact_text(result.extracted_text),
+        urls=redact_data(result.urls),
+        qr_payloads=redact_data(result.qr_payloads),
+        url_component=_redact_component(result.url_component),
+        text_component=_redact_component(result.text_component),
+        qr_component=_redact_component(result.qr_component),
+        reasons=redact_data(result.reasons),
+        errors=redact_data(result.errors),
+    )
