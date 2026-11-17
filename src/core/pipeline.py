@@ -126,3 +126,72 @@ def _analyze_frames(frames: list[np.ndarray], source: str) -> AnalysisResult:
     )
 
 
+def analyze_file(path: str | Path) -> AnalysisResult:
+    """
+    Ingest an image, extract text/QR/URLs, analyze, and score.
+
+    Never raises: unreadable files and unexpected failures return status "error"
+    with classification "Error"; partially readable images return "Inconclusive".
+    """
+    path = Path(path)
+    source = str(path)
+
+    if path.is_dir():
+        return error_result(source, f"{source} is a folder; use the batch command to scan a folder")
+    if not path.is_file():
+        return error_result(source, f"File not found: {source}")
+    if path.suffix.lower() not in SUPPORTED_EXTENSIONS:
+        return error_result(source, f"Unsupported file type: {path.suffix or '(none)'}")
+
+    try:
+        size = path.stat().st_size
+    except OSError as exc:
+        return error_result(source, f"Failed to read file: {exc}")
+    if size > MAX_FILE_BYTES:
+        return error_result(source, f"File too large ({size / 1_048_576:.0f} MB; limit {MAX_FILE_BYTES // 1_048_576} MB)")
+
+    # Check the pixel count from the header before any pixels are decoded.
+    info = read_image_info(source)
+    if info is not None and info[0] * info[1] > MAX_PIXELS:
+        return error_result(source, f"Image too large ({info[0]}x{info[1]} pixels)")
+    # Animations share one pixel budget, so a huge many-frame GIF cannot exhaust memory.
+    max_frames = max(1, MAX_PIXELS // max(1, info[0] * info[1])) if info else 1
+    try:
+        frames = load_frames(source, info[2] if info else 1, max_frames=max_frames)
+    except Exception as exc:  # noqa: BLE001
+        return error_result(source, f"Failed to load image: {exc}")
+    for frame in frames:
+        if frame.shape[0] * frame.shape[1] > MAX_PIXELS:
+            return error_result(source, f"Image too large ({frame.shape[1]}x{frame.shape[0]} pixels)")
+
+    try:
+        return _analyze_frames(frames, source)
+    except Exception as exc:  # noqa: BLE001 — one bad input must not crash a batch
+        return error_result(source, f"Analysis failed: {type(exc).__name__}: {exc}")
+
+
+def analyze_paths(
+    paths: list[Path],
+    *,
+    workers: int = 1,
+    timeout: float | None = None,
+    on_result: Callable[[int, AnalysisResult], None] | None = None,
+) -> list[AnalysisResult]:
+    """
+    Batch analyze; continues after individual failures. Results keep the input order.
+
+    With `workers` > 1 or a `timeout` (seconds per file), files are analysed in worker
+    processes (src.core.batch): a file that hangs or crashes becomes an Error result.
+    `on_result(index, result)` is called as each file finishes.
+    """
+    if workers > 1 or timeout:
+        from src.core.batch import run_parallel
+
+        return run_parallel(paths, workers=workers, timeout=timeout, on_result=on_result)
+    results: list[AnalysisResult] = []
+    for index, path in enumerate(paths):
+        result = analyze_file(path)
+        results.append(result)
+        if on_result is not None:
+            on_result(index, result)
+    return results
