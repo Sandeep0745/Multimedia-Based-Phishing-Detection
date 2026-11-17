@@ -93,3 +93,135 @@ def _is_negated(text: str, start: int) -> bool:
     return bool(_NEGATION_RE.search(text[max(0, start - 40):start]))
 
 
+def _mentioned_brands(text: str) -> list[dict[str, Any]]:
+    """Brands named in the text by name or alias, as whole words ("SBI", "State Bank of India", "PayPal")."""
+    return [brand for brand, patterns in _brand_patterns() if any(p.search(text) for p in patterns)]
+
+
+def brand_mismatch_rule(text: str, link_hosts: list[str]) -> FiredRule | None:
+    """
+    The message claims to come from a brand, but none of its links or sender addresses
+    belong to that brand (e.g. "PayPal" text with a link to paypa1-security.com).
+    """
+    if not link_hosts:
+        return None
+    regs = {registrable_domain(h) for h in link_hosts if h}
+    hosts = {h.lower() for h in link_hosts}
+    for brand in _mentioned_brands(text):
+        official = {d.lower() for d in brand.get("domains", [])}
+        official_regs = {registrable_domain(d) for d in official}
+        if not (regs & official_regs or hosts & official):
+            return FiredRule(
+                "brand_link_mismatch",
+                "Message names a brand but its links / sender belong to someone else",
+                _weight("brand_link_mismatch"),
+                evidence=f"{brand['name']} -> {', '.join(sorted(regs))[:80]}",
+            )
+    return None
+
+
+def analyze_text(text: str, link_hosts: list[str] | None = None) -> ComponentResult:
+    """
+    Score extracted OCR text for phishing language patterns.
+
+    `link_hosts` are the hostnames of URLs and e-mail addresses found in the same image,
+    used to spot a brand named in the text whose links point somewhere else.
+    """
+    rules: list[FiredRule] = []
+    if not text or not text.strip():
+        return ComponentResult(
+            name="text",
+            score=0.0,
+            rules=[],
+            details={"empty": True},
+        )
+
+    lower = text.lower()
+    score = 0.0
+    keywords = load_keywords()
+    lure_hits: list[tuple[str, int]] = []  # (phrase, position) of counted urgency/threat phrases
+
+    def fire(rule_id: str, description: str, evidence: str) -> None:
+        nonlocal score
+        w = _weight(rule_id)
+        score += w
+        rules.append(FiredRule(rule_id, description, w, evidence=evidence))
+
+    for category, phrase, matcher, weight in _lexicon():
+        for match in matcher.finditer(text):
+            if _is_quoted(text, match.start(), match.end()) or _is_negated(text, match.start()):
+                continue
+            score += weight
+            rules.append(FiredRule(f"text_{category}", f"Phishing lexicon hit ({category})", weight, evidence=phrase))
+            if category in LURE_CATEGORIES:
+                lure_hits.append((phrase, match.start()))
+            break  # Count each phrase once.
+
+    # Money requested to a UPI id ("send Rs 20000 to help.pay@ybl").
+    upi = _UPI_ID_RE.search(text)
+    if upi and _MONEY_ASK_RE.search(text):
+        fire("upi_money_request", "Asks to send money to a UPI id", upi.group(0))
+
+    # Callback scams: pressure language plus "call this number".
+    phone = _PHONE_RE.search(text)
+    if phone and lure_hits and _CALL_RE.search(text):
+        fire("callback_number", "Pressure message asks you to call a phone number", phone.group(0))
+
+    # Login / card form: asks for a secret and has a sign-in or submit action.
+    secret = _SECRET_FIELD_RE.search(text)
+    if secret and _SIGN_IN_RE.search(text) and not _is_negated(text, secret.start()):
+        fire("credential_form", "Screen asks for a password / PIN / card details", secret.group(0).lower())
+
+    letters = [c for c in text if c.isalpha()]
+    if letters:
+        caps_ratio = sum(1 for c in letters if c.isupper()) / len(letters)
+        if caps_ratio >= 0.45 and len(letters) >= 20:
+            fire("high_caps_ratio", "High uppercase ratio (shouting / alarm style)", f"{caps_ratio:.2f}")
+
+    bangs = text.count("!")
+    if bangs >= 3:
+        fire("excessive_exclamation", "Excessive exclamation marks", str(bangs))
+
+    # Brand name (or short form like SBI / HDFC) close to urgency or threat language.
+    if lure_hits:
+        for brand, brand_re in _brand_word_patterns():
+            near = next(
+                (
+                    phrase
+                    for m in brand_re.finditer(text)
+                    for phrase, pos in lure_hits
+                    if abs(m.start() - pos) <= 60
+                ),
+                None,
+            )
+            if near:
+                fire("brand_near_urgency", "Brand name adjacent to urgency language", f"{brand} ~ {near}")
+                break
+
+    mismatch = brand_mismatch_rule(text, link_hosts or [])
+    if mismatch:
+        score += mismatch.weight
+        rules.append(mismatch)
+
+    # Security-awareness material quotes scam wording to teach people, so that wording counts
+    # at reduced weight. Concrete money / call requests (ACTION_RULES) keep their full weight.
+    markers = [m for m in keywords.get("awareness_markers", []) if m in lower]
+    discountable = score - sum(r.weight for r in rules if r.rule_id in ACTION_RULES)
+    if markers and discountable > 0:
+        reduction = discountable * (1.0 - _weight("awareness_factor"))
+        score -= reduction
+        rules.append(
+            FiredRule(
+                "awareness_context",
+                f"Reads like security-awareness advice; scam-wording score reduced by {1 - _weight('awareness_factor'):.0%}",
+                -reduction,
+                evidence=", ".join(markers[:3]),
+            )
+        )
+
+    return ComponentResult(
+        name="text",
+        score=max(0.0, min(score, 100.0)),
+        rules=rules,
+        details={"length": len(text), "preview": text[:300]},
+    )
