@@ -1,0 +1,75 @@
+{
+  "phishing_urls": 300,
+  "phishing_detected": 216,
+  "detection_rate": 0.72,
+  "phishing_breakdown": {
+    "High-Risk Phishing": 187,
+    "Safe": 84,
+    "Suspicious": 29
+  },
+  "legitimate_urls": 1000,
+  "legitimate_flagged": 69,
+  "false_positive_rate": 0.069,
+  "legitimate_breakdown": {
+    "High-Risk Phishing": 31,
+    "Safe": 931,
+    "Suspicious": 38
+  },
+  "threshold_sweep": [
+    {
+      "flag_above": 20,
+      "detection_rate": 0.75,
+      "false_positive_rate": 0.146
+    },
+    {
+      "flag_above": 25,
+      "detection_rate": 0.7233,
+      "false_positive_rate": 0.086
+    },
+    {
+      "flag_above": 30,
+      "detection_rate": 0.72,
+      "false_positive_rate": 0.077
+    },
+    {
+      "flag_above": 34,
+      "detection_rate": 0.72,
+      "false_positive_rate": 0.069
+    },
+    {
+      "flag_above": 40,
+      "detection_rate": 0.6467,
+      "false_positive_rate": 0.036
+    },
+    {
+      "flag_above": 45,
+      "detection_rate": 0.6433,
+      "false_positive_rate": 0.031
+    },
+    {
+      "flag_above": 50,
+      "detection_rate": 0.63,
+      "false_positive_rate": 0.031
+    },
+    {
+      "flag_above": 55,
+      "detection_rate": 0.6233,
+      "false_positive_rate": 0.031
+    },
+    {
+      "flag_above": 60,
+      "detection_rate": 0.6233,
+      "false_positive_rate": 0.031
+    },
+    {
+      "flag_above": 69,
+      "detection_rate": 0.6233,
+      "false_positive_rate": 0.031
+    },
+    {
+      "flag_above": 80,
+      "detection_rate": 0.0767,
+      "false_positive_rate": 0.001
+    }
+  ]
+}
