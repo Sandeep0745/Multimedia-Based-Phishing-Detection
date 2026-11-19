@@ -1,0 +1,34 @@
+{
+  "dataset": "PhiUSIIL_Phishing_URL_Dataset.csv",
+  "unique_hosts": 219036,
+  "phishing_hosts": 84244,
+  "legitimate_hosts": 134792,
+  "test_hosts": 50342,
+  "roc_auc": 0.9433,
+  "at_thresholds": [
+    {
+      "threshold": 0.5,
+      "precision": 0.8997,
+      "recall": 0.846,
+      "f1": 0.872,
+      "accuracy": 0.8843,
+      "false_positive_rate": 0.0823
+    },
+    {
+      "threshold": 0.7,
+      "precision": 0.9662,
+      "recall": 0.7866,
+      "f1": 0.8672,
+      "accuracy": 0.8877,
+      "false_positive_rate": 0.024
+    },
+    {
+      "threshold": 0.9,
+      "precision": 0.9961,
+      "recall": 0.6562,
+      "f1": 0.7912,
+      "accuracy": 0.8386,
+      "false_positive_rate": 0.0023
+    }
+  ]
+}
