@@ -1,0 +1,8 @@
+{
+  "sha256": "3ca5569e867e31820966cdc28e727ba1595917bddbb352b259ef18b5d8564196",
+  "sklearn_version": "1.9.1",
+  "created": "2026-10-09",
+  "dataset": "PhiUSIIL_Phishing_URL_Dataset.csv",
+  "unique_hosts": 219036,
+  "note": "Checksum recorded on 2026-10-25 for the model trained on 2026-10-09; python -m src.model.train rewrites this file."
+}
