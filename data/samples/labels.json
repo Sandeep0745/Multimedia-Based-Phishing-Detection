@@ -1,0 +1,11 @@
+{
+  "benign_microsoft_notice.png": "Safe",
+  "phishing_security_alert.png": "High-Risk Phishing",
+  "phishing_gift_card_ad.png": "High-Risk Phishing",
+  "phishing_qr_lookalike.png": "High-Risk Phishing",
+  "suspicious_shortener_qr.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "blank_no_content.png": "Safe"
+}
