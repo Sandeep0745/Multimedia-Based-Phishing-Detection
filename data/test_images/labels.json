@@ -1,0 +1,110 @@
+{
+  "sms_sbi_kyc.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "sms_electricity_callback.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "sms_parcel_held.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "sms_tax_refund.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "sms_otp_request.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "legit_sms_otp.png": "Safe",
+  "legit_sms_delivery.png": "Safe",
+  "whatsapp_job_scam.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "whatsapp_investment.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "whatsapp_family_emergency.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "legit_whatsapp_class.png": "Safe",
+  "email_paypal_limited.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "email_mailbox_full.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "legit_email_course.png": "Safe",
+  "login_fake_paypal.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "login_fake_sbi.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "legit_login_sbi.png": "Safe",
+  "ad_iphone_giveaway.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "ad_instant_loan.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "ad_crypto_doubler.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "legit_ad_sale.png": "Safe",
+  "poster_upi_refund.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "poster_parking_qr.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "poster_bare_domain_qr.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "legit_poster_wifi.png": "Safe",
+  "legit_poster_irctc.png": "Safe",
+  "social_insta_giveaway.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "evasion_rotated_sms.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "evasion_lowres_email.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "evasion_photo_login.jpg": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "evasion_darkmode_sms.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "evasion_defanged_link.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "evasion_awareness_camouflage.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ]
+}
