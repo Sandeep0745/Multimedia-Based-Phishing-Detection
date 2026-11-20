@@ -1,0 +1,71 @@
+{
+  "typosquat.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "brand_chain.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "bad_tld.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "shortener.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "ip_host.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "at_trick.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "sms_scam.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "legit.png": "Safe",
+  "PhishTank1.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "no_scheme.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "punycode.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "free_hosting.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "open_redirect.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "google_sites.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "defanged.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "javascript.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "sms_kyc.png": [
+    "Suspicious",
+    "High-Risk Phishing"
+  ],
+  "legit_wifi.png": "Safe",
+  "legit_vcard.png": "Safe",
+  "legit_irctc.png": "Safe",
+  "legit_upi_shop.png": "Safe"
+}
